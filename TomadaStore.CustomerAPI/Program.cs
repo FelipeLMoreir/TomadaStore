@@ -1,8 +1,18 @@
+using TomadaStore.CustomerAPI.Data;
+using TomadaStore.CustomerAPI.Repository;
+using TomadaStore.CustomerAPI.Repository.Interfaces;
+using TomadaStore.CustomerAPI.Services;
+using TomadaStore.CustomerAPI.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<ConnectionDB>();
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 var app = builder.Build();
 

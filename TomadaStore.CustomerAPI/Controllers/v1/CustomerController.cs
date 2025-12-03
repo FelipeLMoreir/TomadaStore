@@ -23,16 +23,29 @@ namespace TomadaStore.CustomerAPI.Controllers.v1
         {
             try
             {
-                _logger.LogInformation("Creating customer");
-
                 await _customerService.InsertCustomerAsync(customer);
 
                 return Created();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while creating customer" + ex.Message);
+                _logger.LogError("Error occurred while creating customer" + ex.Message);
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<CustomerResponseDTO>>> GetAllCustomers()
+        {
+            try
+            {
+                var customers = await _customerService.GetAllCustomersAsync();
+                return Ok(customers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occurred while getting all customers" + ex.Message);
+                return Problem(ex.StackTrace);
             }
         }
     }

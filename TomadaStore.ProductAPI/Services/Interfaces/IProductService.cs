@@ -1,4 +1,4 @@
-﻿]using TomadaStore.Models.DTOs.Product;
+﻿using TomadaStore.Models.DTOs.Product;
 
 namespace TomadaStore.ProductAPI.Services.Interfaces
 {

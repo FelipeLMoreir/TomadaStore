@@ -23,7 +23,7 @@ namespace TomadaStore.CustomerAPI.Repository
         {
             try
             {
-                var sqlSelect = @"SELECT Id, FirstName, LastName, Email, PhoneNumber
+                var sqlSelect = @"SELECT Id, FirstName, LastName, Email, PhoneNumber, IsActive
                                   FROM Customers";
                 var customers = await _connection.QueryAsync<CustomerResponseDTO>(sqlSelect);
                 return customers.ToList();
@@ -40,9 +40,30 @@ namespace TomadaStore.CustomerAPI.Repository
             }
         }
 
-        public Task<CustomerRequestDTO> GetCustomerByIdAsync(int id)
+        public async Task<CustomerResponseDTO> GetCustomerByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sqlSelect = @"SELECT Id, FirstName, LastName, Email, PhoneNumber
+                          FROM Customers 
+                          WHERE Id = @Id";
+                var customer = await _connection.QuerySingleOrDefaultAsync<CustomerResponseDTO>(sqlSelect, new { Id = id });
+
+                if (customer == null)
+                    return null;
+
+                return customer;
+            }
+            catch (SqlException sqlEx)
+            {
+                _logger.LogError(sqlEx, "SQL error occurred while getting customer by id {Id}: {Message}", id, sqlEx.Message);
+                throw new Exception(sqlEx.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while getting customer by id {Id}: {Message}", id, ex.Message);
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task InsertCustomerAsync(CustomerRequestDTO customer)
@@ -64,6 +85,28 @@ namespace TomadaStore.CustomerAPI.Repository
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while inserting customer: " + ex.StackTrace);
+                throw new Exception(ex.Message);
+            }
+        }
+        public async Task<bool> CustomerStatusAsync(int id)
+        {
+            try
+            {
+                var sqlToggle = @"UPDATE Customers 
+                          SET IsActive = CASE WHEN IsActive = 1 THEN 0 ELSE 1 END 
+                          WHERE Id = @Id";
+
+                var rowsAffected = await _connection.ExecuteAsync(sqlToggle, new { Id = id });
+                return rowsAffected > 0;
+            }
+            catch (SqlException sqlEx)
+            {
+                _logger.LogError(sqlEx, "SQL error occurred while toggling customer status {Id}: {Message}", id, sqlEx.Message);
+                throw new Exception(sqlEx.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while toggling customer status {Id}: {Message}", id, ex.Message);
                 throw new Exception(ex.Message);
             }
         }

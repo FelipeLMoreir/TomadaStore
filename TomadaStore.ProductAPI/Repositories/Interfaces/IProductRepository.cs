@@ -1,4 +1,5 @@
-﻿using TomadaStore.Models.DTOs.Product;
+﻿using MongoDB.Bson;
+using TomadaStore.Models.DTOs.Product;
 
 namespace TomadaStore.ProductAPI.Repositories.Interfaces
 {
@@ -6,5 +7,6 @@ namespace TomadaStore.ProductAPI.Repositories.Interfaces
     {
         Task CreateProductAsync(ProductRequestDTO productDTO);
         Task<List<ProductResponseDTO>> GetAllProductsAsync();
+        Task<ProductResponseDTO> GetProductByIDAsync(ObjectId id);
     }
 }

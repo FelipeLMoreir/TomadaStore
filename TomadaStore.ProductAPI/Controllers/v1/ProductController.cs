@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using TomadaStore.Models.DTOs.Product;
 using TomadaStore.ProductAPI.Services.Interfaces;
 
@@ -32,6 +33,25 @@ namespace TomadaStore.ProductAPI.Controllers.v1
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductResponseDTO>> GetProductByIdAsync(ObjectId id)
+        {
+            try
+            {
+                var product = await _productService.GetProductByIDAsync(id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while getting the product with ID {id}.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateProductAsync([FromBody] ProductRequestDTO productDto)
         {
@@ -47,5 +67,6 @@ namespace TomadaStore.ProductAPI.Controllers.v1
                 return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
         }
+
     }
 }

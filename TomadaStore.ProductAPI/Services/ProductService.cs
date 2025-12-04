@@ -1,4 +1,5 @@
-﻿using TomadaStore.Models.DTOs.Product;
+﻿using MongoDB.Bson;
+using TomadaStore.Models.DTOs.Product;
 using TomadaStore.ProductAPI.Repositories.Interfaces;
 using TomadaStore.ProductAPI.Services.Interfaces;
 
@@ -26,22 +27,38 @@ namespace TomadaStore.ProductAPI.Services
             }
         }
 
-        public Task DeleteProductAsync(string id)
+        public Task DeleteProductAsync(ObjectId id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<ProductResponseDTO>> GetProductAsync()
+        public async Task<List<ProductResponseDTO>> GetProductAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _productRepository.GetAllProductsAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error retrieving products: {ex.Message}");
+                throw;
+            }
         }
 
-        public Task<ProductResponseDTO> GetProductByIDAsync(string id)
+        public async Task<ProductResponseDTO> GetProductByIDAsync(ObjectId id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _productRepository.GetProductByIDAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error retrieving product by ID: {ex.Message}");
+                throw;
+            }
         }
 
-        public Task UpdateProductAsync(string id, ProductRequestDTO productDto)
+        public Task UpdateProductAsync(ObjectId id, ProductRequestDTO productDto)
         {
             throw new NotImplementedException();
         }

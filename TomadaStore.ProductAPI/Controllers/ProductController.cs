@@ -38,7 +38,8 @@ namespace TomadaStore.ProductAPI.Controllers
             try
             {
                 await _productService.CreateProductAsync(productDto);
-                return CreatedAtAction(nameof(GetAllProductsAsync), null);
+                //return CreatedAtAction(nameof(GetAllProductsAsync), null);
+                return Created();
             }
             catch (Exception ex)
             {

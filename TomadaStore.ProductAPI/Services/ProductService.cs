@@ -13,9 +13,17 @@ namespace TomadaStore.ProductAPI.Services
             _logger = logger;
             _productRepository = productRepository;
         }
-        public Task CreateProductAsync(ProductRequestDTO product)
+        public async Task CreateProductAsync(ProductRequestDTO productDto)
         {
-
+            try
+            {
+                await _productRepository.CreateProductAsync(productDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error creating productDto: {ex.Message}");
+                throw;
+            }
         }
 
         public Task DeleteProductAsync(string id)

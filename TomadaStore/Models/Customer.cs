@@ -20,5 +20,14 @@
         {
             PhoneNumber = phoneNumber;
         }
+
+        public Customer(int id, string firstName, string lastName, string email, string? phoneNumber)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            PhoneNumber = phoneNumber;
+        }
     }
 }

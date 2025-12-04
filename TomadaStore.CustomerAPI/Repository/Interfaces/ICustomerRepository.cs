@@ -1,4 +1,4 @@
-﻿using TomadaStore.Models.DTOs;
+﻿using TomadaStore.Models.DTOs.Customer;
 using TomadaStore.Models.Models;
 
 namespace TomadaStore.CustomerAPI.Repository.Interfaces

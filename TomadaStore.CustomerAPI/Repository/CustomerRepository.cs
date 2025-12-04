@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using TomadaStore.CustomerAPI.Data;
 using TomadaStore.CustomerAPI.Repository.Interfaces;
-using TomadaStore.Models.DTOs;
+using TomadaStore.Models.DTOs.Customer;
 using TomadaStore.Models.Models;
 
 namespace TomadaStore.CustomerAPI.Repository

@@ -23,45 +23,40 @@ namespace TomadaStore.SalesAPI.Repositories
             _mongoCollection = _connection.GetMongoCollection();
         }
         public async Task CreateSaleAsync(CustomerResponseDTO customerDTO,
-                                            ProductResponseDTO productDTO,
-                                            SaleRequestDTO sale)
+                                  List<ProductResponseDTO> productDTOs,
+                                  decimal totalPrice)
         {
             try
             {
                 var products = new List<Product>();
 
-                var category = new Category
-                (
-                    productDTO.Category.Id,
-                    productDTO.Category.Name,
-                    productDTO.Category.Description
-                );
+                foreach (var productDTO in productDTOs)
+                {
+                    var category = new Category(
+                        productDTO.Category.Id,
+                        productDTO.Category.Name,
+                        productDTO.Category.Description
+                    );
 
-                var product = new Product
-                (
-                    productDTO.Id,
-                    productDTO.Name,
-                    productDTO.Description,
-                    productDTO.Price,
-                    category
-                );
+                    var product = new Product(
+                        productDTO.Id,
+                        productDTO.Name,
+                        productDTO.Description,
+                        productDTO.Price,
+                        category
+                    );
+                    products.Add(product);
+                }
 
-                products.Add(product);
-
-                var customer = new Customer
-                (
+                var customer = new Customer(
                     customerDTO.Id,
                     customerDTO.FirstName,
                     customerDTO.LastName,
                     customerDTO.Email,
                     customerDTO.PhoneNumber
                 );
-                await _mongoCollection.InsertOneAsync(new Sale
-                (
-                    customer,
-                    products,
-                    productDTO.Price
-                ));
+
+                await _mongoCollection.InsertOneAsync(new Sale(customer, products, totalPrice));
             }
             catch (Exception ex)
             {

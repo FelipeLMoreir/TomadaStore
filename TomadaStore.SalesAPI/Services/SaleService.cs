@@ -20,14 +20,31 @@ namespace TomadaStore.SalesAPI.Services
             _httpClientCustomer = httpCustomer;
         }
 
-        public async Task CreateSaleAsync(int idCustomer, string idProduct, SaleRequestDTO saleDto)
+        public async Task CreateSaleAsync(int customerId, SaleRequestDTO saleDto)
         {
             try
             {
-                var customer = await _httpClientCustomer.GetFromJsonAsync<CustomerResponseDTO>(idCustomer.ToString());
-                var product = await _httpClientProduct.GetFromJsonAsync<ProductResponseDTO>(idProduct);
-                await _saleRepository.CreateSaleAsync(customer, product, saleDto);
+                var customerResponse = await _httpClientCustomer.GetAsync($"v1/customers/{customerId}");
+                customerResponse.EnsureSuccessStatusCode();
+                var customerDTO = 
+                    await customerResponse.Content.ReadFromJsonAsync<CustomerResponseDTO>();
 
+                var productTasks = saleDto.Items.Select(item =>
+                    _httpClientProduct.GetAsync($"v1/products/{item.ProductId}"));
+
+                var productResponses = await Task.WhenAll(productTasks);
+                var productsDTO = new List<ProductResponseDTO>();
+
+                foreach (var response in productResponses)
+                {
+                    response.EnsureSuccessStatusCode();
+                    productsDTO.Add(await response.Content.ReadFromJsonAsync<ProductResponseDTO>());
+                }
+
+                decimal totalPrice = productsDTO.Sum(p => p.Price *
+                    saleDto.Items.First(i => i.ProductId == p.Id).Quantity);
+
+                await _saleRepository.CreateSaleAsync(customerDTO, productsDTO, totalPrice);
             }
             catch (Exception ex)
             {

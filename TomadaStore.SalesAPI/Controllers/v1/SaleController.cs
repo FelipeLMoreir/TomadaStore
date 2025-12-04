@@ -5,7 +5,7 @@ using TomadaStore.SalesAPI.Services.Interfaces;
 
 namespace TomadaStore.SalesAPI.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class SaleController : ControllerBase
     {
@@ -19,12 +19,20 @@ namespace TomadaStore.SalesAPI.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSaleAsync(int idCustomer, string idProduct, [FromBody] SaleRequestDTO saleDto)
+        public async Task<ActionResult> CreateSaleAsync([FromBody] SaleRequestDTO saleDto)
         {
-            _logger.LogInformation("Creating a new sale...");
+            _logger.LogInformation("Creating a new sale with {Count} products...", saleDto.Items.Count);
 
-            await _saleService.CreateSaleAsync(idCustomer, idProduct, saleDto);
-            return Ok();
+            try
+            {
+                await _saleService.CreateSaleAsync(saleDto.CustomerId, saleDto);
+                return Ok("Venda criada com sucesso");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating sale");
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

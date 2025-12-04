@@ -1,11 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using TomadaStore.Models.DTOs.Category;
-using TomadaStore.Models.Models;
 
-namespace TomadaStore.Models.DTOs.Product
+namespace TomadaStore.Models.DTOs.Category
 {
-    public class ProductResponseDTO
+    public class CategoryResponseDTO
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -14,9 +12,5 @@ namespace TomadaStore.Models.DTOs.Product
         public string Name { get; init; }
         [BsonElement("description")]
         public string Description { get; init; }
-        [BsonElement("price")]  
-        public decimal Price { get; init; }
-        [BsonElement("category")]
-        public CategoryResponseDTO Category { get; init; }
     }
 }

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using TomadaStore.Models.DTOs.Product;
 using TomadaStore.ProductAPI.Services.Interfaces;
 
-namespace TomadaStore.ProductAPI.Controllers
+namespace TomadaStore.ProductAPI.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {

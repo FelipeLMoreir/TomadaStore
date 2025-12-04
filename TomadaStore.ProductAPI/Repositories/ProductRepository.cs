@@ -26,7 +26,10 @@ namespace TomadaStore.ProductAPI.Repositories
                     productDTO.Name,
                     productDTO.Description,
                     productDTO.Price,
-                    productDTO.Category
+                    new Category(
+                        productDTO.Category.Name,
+                        productDTO.Category.Description
+                        )
                 ));
             }
             catch (Exception ex)

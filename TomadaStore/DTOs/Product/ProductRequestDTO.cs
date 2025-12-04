@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
+using TomadaStore.Models.DTOs.Category;
 using TomadaStore.Models.Models;
 
 namespace TomadaStore.Models.DTOs.Product
@@ -12,6 +13,6 @@ namespace TomadaStore.Models.DTOs.Product
         [BsonElement("price")]
         public decimal Price { get; init; }
         [BsonElement("category")]
-        public Category Category { get; init; }
+        public CategoryRequestDTO Category { get; init; }
     }
 }

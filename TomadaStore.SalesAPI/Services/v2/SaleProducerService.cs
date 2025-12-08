@@ -6,18 +6,22 @@ using TomadaStore.SalesAPI.Services.Interfaces;
 
 namespace TomadaStore.SalesAPI.Services.v2
 {
-    public class SaleServiceV2 : ISaleServiceV2
+    public class SaleProducerService : ISaleProducerService
     {
         private readonly ISaleRepository _saleRepository;
 
-        private readonly ILogger<SaleServiceV2> _logger;
+        private readonly ILogger<SaleProducerService> _logger;
 
         private readonly HttpClient _httpClientProduct;
 
         private readonly HttpClient _httpClientCustomer;
 
-        public SaleServiceV2(ISaleRepository saleRepository,
-                            ILogger<SaleServiceV2> logger,
+        public SaleProducerService()
+        {
+        }
+
+        public SaleProducerService(ISaleRepository saleRepository,
+                            ILogger<SaleProducerService> logger,
                             HttpClient httpProduct,
                             HttpClient httpCustomer)
         {

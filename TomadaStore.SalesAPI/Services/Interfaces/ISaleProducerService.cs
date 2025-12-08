@@ -2,7 +2,7 @@
 
 namespace TomadaStore.SalesAPI.Services.Interfaces
 {
-    public interface ISaleServiceV2
+    public interface ISaleProducerService
     {
         Task CreateSaleRabbitAsync();
     }

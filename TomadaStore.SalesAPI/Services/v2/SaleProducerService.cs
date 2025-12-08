@@ -16,10 +16,6 @@ namespace TomadaStore.SalesAPI.Services.v2
 
         private readonly HttpClient _httpClientCustomer;
 
-        public SaleProducerService()
-        {
-        }
-
         public SaleProducerService(ISaleRepository saleRepository,
                             ILogger<SaleProducerService> logger,
                             HttpClient httpProduct,

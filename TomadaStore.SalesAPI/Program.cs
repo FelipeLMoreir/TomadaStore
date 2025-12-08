@@ -1,8 +1,8 @@
 using TomadaStore.SalesAPI.Data;
 using TomadaStore.SalesAPI.Repositories;
 using TomadaStore.SalesAPI.Repositories.Interfaces;
-using TomadaStore.SalesAPI.Services;
 using TomadaStore.SalesAPI.Services.Interfaces;
+using TomadaStore.SalesAPI.Services.v1;
 
 var builder = WebApplication.CreateBuilder(args);
 

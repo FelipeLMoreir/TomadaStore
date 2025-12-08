@@ -1,9 +1,9 @@
 ﻿using TomadaStore.Models.DTOs.Sale;
 
-namespace TomadaStore.SalesAPI.Services.Interfaces
+namespace TomadaStore.SaleAPI.Services.Interfaces
 {
     public interface ISaleService
     {
-        Task CreateSaleAsync(int customerId, SaleRequestDTO saleDto);
+        Task CreateSaleAsync(int idCustomer, string idProduct, SaleRequestDTO saleDTO);
     }
 }

@@ -17,4 +17,8 @@
     <ProjectReference Include="..\TomadaStore\TomadaStore.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\v2\" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,6 @@
 ﻿using TomadaStore.CustomerAPI.Repository.Interfaces;
 using TomadaStore.CustomerAPI.Services.Interfaces;
 using TomadaStore.Models.DTOs.Customer;
-using TomadaStore.Models.Models;
 
 namespace TomadaStore.CustomerAPI.Services
 {

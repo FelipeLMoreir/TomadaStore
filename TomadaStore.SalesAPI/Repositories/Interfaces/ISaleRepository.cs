@@ -3,12 +3,12 @@ using TomadaStore.Models.DTOs.Product;
 using TomadaStore.Models.DTOs.Sale;
 using TomadaStore.Models.Models;
 
-namespace TomadaStore.SalesAPI.Repositories.Interfaces
+namespace TomadaStore.SaleAPI.Repository.Interfaces
 {
     public interface ISaleRepository
     {
-        Task CreateSaleAsync(CustomerResponseDTO customerDTO,
-                                  List<ProductResponseDTO> productDTOs,
-                                  decimal totalPrice);
+        Task CreateSaleAsync(CustomerResponseDTO customer,
+                            ProductResponseDTO product,
+                            SaleRequestDTO sale);
     }
 }

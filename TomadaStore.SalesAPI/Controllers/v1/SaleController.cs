@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TomadaStore.Models.DTOs.Sale;
+using TomadaStore.SaleAPI.Services.Interfaces;
 using TomadaStore.SalesAPI.Services.Interfaces;
 
-namespace TomadaStore.SalesAPI.Controllers.v1
+namespace TomadaStore.SaleAPI.Controllers.v1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
@@ -12,27 +13,24 @@ namespace TomadaStore.SalesAPI.Controllers.v1
         private readonly ILogger<SaleController> _logger;
         private readonly ISaleService _saleService;
 
-        public SaleController(ILogger<SaleController> logger, ISaleService saleService)
+
+        public SaleController(ILogger<SaleController> logger,
+                                ISaleService saleService)
         {
             _logger = logger;
             _saleService = saleService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> CreateSaleAsync([FromBody] SaleRequestDTO saleDto)
+        [HttpPost("customer/{idCustomer}/product/{idProduct}")]
+        public async Task<IActionResult> CreateSaleAsync(int idCustomer,
+                                                        string idProduct,
+                                                        [FromBody] SaleRequestDTO saleDTO)
         {
-            _logger.LogInformation("Creating a new sale with {Count} products...", saleDto.Items.Count);
+            _logger.LogInformation("Creating a new sale.");
 
-            try
-            {
-                await _saleService.CreateSaleAsync(saleDto.CustomerId, saleDto);
-                return Ok("Venda criada com sucesso");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating sale");
-                return BadRequest(ex.Message);
-            }
+            await _saleService.CreateSaleAsync(idCustomer, idProduct, saleDTO);
+
+            return Ok("Sale created successfully.");
         }
     }
 }

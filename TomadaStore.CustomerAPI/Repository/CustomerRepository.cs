@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using TomadaStore.CustomerAPI.Data;
 using TomadaStore.CustomerAPI.Repository.Interfaces;
 using TomadaStore.Models.DTOs.Customer;
-using TomadaStore.Models.Models;
 
 namespace TomadaStore.CustomerAPI.Repository
 {
@@ -12,7 +11,7 @@ namespace TomadaStore.CustomerAPI.Repository
         private readonly ILogger<CustomerRepository> _logger;
         private readonly SqlConnection _connection;
 
-        public CustomerRepository(ILogger<CustomerRepository> logger, 
+        public CustomerRepository(ILogger<CustomerRepository> logger,
             ConnectionDB connectionDB)
         {
             _logger = logger;
@@ -72,10 +71,13 @@ namespace TomadaStore.CustomerAPI.Repository
             {
                 var insertSql = "INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber) " +
                                 "VALUES (@FirstName, @LastName, @Email, @PhoneNumber)";
-                await _connection.ExecuteAsync(insertSql, new { customer.FirstName,
-                                                                customer.LastName,
-                                                                customer.Email,
-                                                                customer.PhoneNumber});
+                await _connection.ExecuteAsync(insertSql, new
+                {
+                    customer.FirstName,
+                    customer.LastName,
+                    customer.Email,
+                    customer.PhoneNumber
+                });
             }
             catch (SqlException sqlEx)
             {

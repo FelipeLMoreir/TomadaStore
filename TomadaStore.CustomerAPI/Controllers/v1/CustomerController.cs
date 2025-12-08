@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TomadaStore.CustomerAPI.Services;
 using TomadaStore.CustomerAPI.Services.Interfaces;
 using TomadaStore.Models.DTOs.Customer;
 using TomadaStore.Models.Models;

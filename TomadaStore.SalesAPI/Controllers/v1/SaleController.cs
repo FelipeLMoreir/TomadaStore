@@ -6,7 +6,7 @@ using TomadaStore.SalesAPI.Services.Interfaces;
 
 namespace TomadaStore.SaleAPI.Controllers.v1
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SaleController : ControllerBase
     {

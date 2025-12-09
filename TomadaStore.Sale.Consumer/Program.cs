@@ -1,7 +1,5 @@
-using TomadaStore.Sale.Consumer.Repository;
-using TomadaStore.Sale.Consumer.Repository.Interfaces;
-using TomadaStore.Sale.Consumer.Service;
-using TomadaStore.Sale.Consumer.Service.Interfaces;
+using TomadaStore.SaleConsumer.Service;
+using TomadaStore.SaleConsumer.Service.Interfaces;
 using TomadaStore.SaleAPI.Repository;
 using TomadaStore.SaleAPI.Repository.Interfaces;
 using TomadaStore.SalesAPI.Data;
@@ -17,13 +15,15 @@ builder.Services.Configure<MongoDbSettings>(
 
 builder.Services.AddSingleton<ConnectionDB>();
 
-builder.Services.AddScoped<ISaleConsumerRepository, SaleConsumerRepository>();
-
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ISaleConsumerService, SaleConsumerService>();
 
 builder.Services.AddHttpClient("PaymentAPI", client =>
-    client.BaseAddress = new Uri("https://localhost:7162")); 
+    client.BaseAddress = new Uri("https://localhost:7162"));
+builder.Services.AddHttpClient("CustomerAPI", client => 
+    client.BaseAddress = new Uri("https://localhost:5001"));
+builder.Services.AddHttpClient("ProductAPI", client => 
+    client.BaseAddress = new Uri("https://localhost:6001"));
 
 
 

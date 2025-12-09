@@ -12,6 +12,11 @@ namespace TomadaStore.Models.Models
         public decimal Amount { get; private set; }
         public DateTime ProcessedAt { get; private set; }
 
+        public Payment()
+        {
+            
+        }
+
         public Payment(string saleId, string status, decimal amount)
         {
             Id = Guid.NewGuid().ToString();

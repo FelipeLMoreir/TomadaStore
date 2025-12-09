@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using TomadaStore.Models.DTOs.Customer;
+using TomadaStore.Models.DTOs.Product;
 using TomadaStore.Models.DTOs.Sale;
 using TomadaStore.SaleAPI.Services.Interfaces;
 using TomadaStore.SalesAPI.Repositories.Interfaces;
@@ -11,6 +13,8 @@ namespace TomadaStore.SalesAPI.Services.v2
         private readonly ISaleProducerRepository _producerRepository;
         private readonly ILogger<SaleProducerService> _logger;
         private readonly ISaleService _saleService;
+        private static readonly HttpClient _httpClientCustomer;
+        private static readonly HttpClient _httpClientProduct;
 
         public SaleProducerService(
             ISaleProducerRepository producerRepository,
@@ -26,22 +30,33 @@ namespace TomadaStore.SalesAPI.Services.v2
         {
             try
             {
-                var firstProduct = saleDTO.Products.FirstOrDefault();
-                var quantity = firstProduct?.Quantity ?? 1;
+                var customerResp = await _httpClientCustomer.GetAsync($"/api/v1/customer/{idCustomer}");
+                var customer = await customerResp.Content.ReadFromJsonAsync<CustomerResponseDTO>();
+
+                decimal totalAmount = 0;
+                foreach (var item in saleDTO.Products)
+                {
+                    var productResp = await _httpClientProduct.GetAsync($"/api/v1/product/{item.ProductId}");
+                    var product = await productResp.Content.ReadFromJsonAsync<ProductResponseDTO>();
+                    totalAmount += product.Price * item.Quantity;
+                }
 
                 var saleEvent = new
                 {
-                    CustomerId = idCustomer,
-                    ProductId = idProduct,
-                    Quantity = quantity,  
-                    SaleDate = DateTime.UtcNow
+                    CustomerId = customer.Id,
+                    CustomerName = $"{customer.FirstName} {customer.LastName}",
+                    Products = saleDTO.Products,
+                    TotalAmount = totalAmount,
+                    SaleDate = DateTime.UtcNow,
+                    SaleId = Guid.NewGuid().ToString()
                 };
 
                 await _producerRepository.PublishSaleAsync(saleEvent);
+                _logger.LogInformation("Sale published to queue. Total: {TotalAmount}", totalAmount);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao publicar venda no RabbitMQ");
+                _logger.LogError(ex, "Erro ao criar venda");
                 throw;
             }
         }

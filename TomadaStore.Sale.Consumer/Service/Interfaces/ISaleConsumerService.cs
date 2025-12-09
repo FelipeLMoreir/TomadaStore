@@ -1,4 +1,4 @@
-﻿namespace TomadaStore.Sale.Consumer.Service.Interfaces
+﻿namespace TomadaStore.SaleConsumer.Service.Interfaces
 {
     public interface ISaleConsumerService
     {

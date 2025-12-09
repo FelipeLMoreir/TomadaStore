@@ -36,7 +36,7 @@ namespace TomadaStore.SalesAPI.Repositories
                 routingKey: "sale.requests",
                 body: body);
 
-            _logger.LogInformation(" [x] Sent sale request: {Message}", json);
+            _logger.LogInformation("Sent sale request: {Message}", json);
         }
     }
 }

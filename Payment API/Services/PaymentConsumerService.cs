@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 using TomadaStore.Models.DTOs.Payment;
+using TomadaStore.Models.DTOs.Sales;
 
 namespace TomadaStore.PaymentAPI.Services
 {
@@ -33,28 +34,56 @@ namespace TomadaStore.PaymentAPI.Services
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
-                arguments: null);
+                arguments: null
+                );
 
-            _logger.LogInformation(" [*] PaymentAPI waiting for payment requests...");
+            await channel.QueueDeclareAsync(
+                queue: "approved-sales.queue",
+                durable: false, 
+                exclusive: false,
+                autoDelete: false,
+                arguments: null
+                );
+
+            _logger.LogInformation("PaymentAPI waiting for payment requests...");
 
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
+
                 _logger.LogInformation("Payment request received: {Message}", message);
 
-                var paymentRequest = JsonSerializer.Deserialize<PaymentRequestDTO>(message);
+                var paymentRequest = JsonSerializer.Deserialize<SaleEventDTO>(message); 
 
-                var paymentResponse = new PaymentResponseDTO
+                if (paymentRequest.TotalAmount > 1000)
                 {
-                    PaymentId = Guid.NewGuid().ToString(),
+                    _logger.LogWarning("Sale REJECTED - Wallet limit exceeded: {TotalAmount} > 1000", paymentRequest.TotalAmount);
+                    await Task.CompletedTask; 
+                    return;
+                }
+
+                var approvedEvent = new ApprovedSaleEventDTO
+                {
                     SaleId = paymentRequest.SaleId,
-                    Status = "Approved", 
-                    Amount = paymentRequest.TotalAmount
+                    CustomerId = paymentRequest.CustomerId,
+                    CustomerName = paymentRequest.CustomerName,
+                    Products = paymentRequest.Products,
+                    TotalAmount = paymentRequest.TotalAmount,
+                    ApprovedAt = DateTime.UtcNow
                 };
 
-                await _producerRepository.PublishPaymentConfirmedAsync(paymentResponse);
+                var approvedJson = JsonSerializer.Serialize(approvedEvent);
+                var approvedBody = Encoding.UTF8.GetBytes(approvedJson);
+
+                await channel.BasicPublishAsync(
+                    exchange: "",
+                    routingKey: "approved-sales.queue",
+                    body: approvedBody);
+
+                _logger.LogInformation("✅ Sale APPROVED: {SaleId} | Total: {TotalAmount}",
+                    approvedEvent.SaleId, approvedEvent.TotalAmount);
 
                 await Task.CompletedTask;
             };

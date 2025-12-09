@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TomadaStore.Sale.Consumer.Service.Interfaces;
+using TomadaStore.SaleConsumer.Service.Interfaces;
 
-namespace TomadaStore.Sale.Consumer.Controllers
+namespace TomadaStore.SaleConsumer.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]

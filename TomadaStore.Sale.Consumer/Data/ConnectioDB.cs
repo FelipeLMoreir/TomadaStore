@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using TomadaStore.Models.Models;
 
-namespace TomadaStore.Sale.Consumer.Data
+namespace TomadaStore.SaleConsumer.Data
 {
     public class ConnectionDB
     {

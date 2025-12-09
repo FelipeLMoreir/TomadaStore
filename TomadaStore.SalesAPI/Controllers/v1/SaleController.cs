@@ -6,7 +6,7 @@ using TomadaStore.SalesAPI.Services.Interfaces;
 
 namespace TomadaStore.SaleAPI.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class SaleController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace TomadaStore.SaleAPI.Controllers.v1
             _saleService = saleService;
         }
 
-        [HttpPost("customer/{idCustomer}/product/{idProduct}")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateSaleAsync(int idCustomer,
                                                         string idProduct,
                                                         [FromBody] SaleRequestDTO saleDTO)

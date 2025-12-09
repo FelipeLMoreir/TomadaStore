@@ -2,7 +2,7 @@
   <Project Path="Payment API/TomadaStore.PaymentAPI.csproj" Id="4aeb1c9a-4d8a-4df3-81a2-c54d2057c1d5" />
   <Project Path="TomadaStore.CustomerAPI/TomadaStore.CustomerAPI.csproj" />
   <Project Path="TomadaStore.ProductAPI/TomadaStore.ProductAPI.csproj" />
-  <Project Path="TomadaStore.Sale.Consumer/TomadaStore.Sale.Consumer.csproj" Id="01920882-74f7-4851-a481-3f5811d4c024" />
+  <Project Path="TomadaStore.Sale.Consumer/TomadaStore.SaleConsumer.csproj" Id="01920882-74f7-4851-a481-3f5811d4c024" />
   <Project Path="TomadaStore.SalesAPI/TomadaStore.SalesAPI.csproj" />
   <Project Path="TomadaStore/TomadaStore.Models.csproj" />
 </Solution>

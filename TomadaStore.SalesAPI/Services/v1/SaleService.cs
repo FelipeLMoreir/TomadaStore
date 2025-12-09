@@ -36,11 +36,11 @@ namespace TomadaStore.SaleAPI.Services
             {
                 var customer = await _httpClientCustomer
                                     .GetFromJsonAsync<CustomerResponseDTO>
-                                    (idCustomer.ToString());
+                                    ($"/api/v1/customer/{idCustomer}");
 
                 var product = await _httpClientProduct
                                     .GetFromJsonAsync<ProductResponseDTO>
-                                    (idProduct);
+                                    ($"/api/v1/product/{idProduct}");
 
                 await _saleRepository.CreateSaleAsync(customer, product, saleDTO);
 

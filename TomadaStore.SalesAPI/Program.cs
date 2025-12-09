@@ -14,9 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDB"));
-
+builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDB"));
 builder.Services.AddSingleton<ConnectionDB>();
 
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
@@ -25,11 +23,16 @@ builder.Services.AddScoped<ISaleProducerRepository, SaleProducerRepository>();
 builder.Services.AddScoped<ISaleProducerService, SaleProducerService>();
 
 
-builder.Services.AddHttpClient<ISaleService, SaleService>(client =>
-        client.BaseAddress = new Uri("https://localhost:5001/api/v1/Customer"));
+builder.Services.AddHttpClient("CustomerAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5001/"); 
+});
 
-builder.Services.AddHttpClient<ISaleService, SaleService>(client =>
-        client.BaseAddress = new Uri("https://localhost:6001/api/v1/Product"));
+builder.Services.AddHttpClient("ProductAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:6001/"); 
+});
+
 
 
 var app = builder.Build();

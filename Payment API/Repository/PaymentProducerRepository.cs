@@ -1,42 +1,43 @@
-﻿using RabbitMQ.Client;
+﻿using Payment_API.Repository.Interfaces;
+using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
-using TomadaStore.SalesAPI.Repositories.Interfaces;
+using TomadaStore.Models.DTOs.Payment;
 
-namespace TomadaStore.SalesAPI.Repositories
+namespace TomadaStore.PaymentAPI.Repositories
 {
-    public class SaleProducerRepository : ISaleProducerRepository
+    public class PaymentProducerRepository : IPaymentProducerRepository
     {
-        private readonly ILogger<SaleProducerRepository> _logger;
+        private readonly ILogger<PaymentProducerRepository> _logger;
         private readonly ConnectionFactory _factory;
 
-        public SaleProducerRepository(ILogger<SaleProducerRepository> logger)
+        public PaymentProducerRepository(ILogger<PaymentProducerRepository> logger)
         {
             _logger = logger;
             _factory = new ConnectionFactory { HostName = "localhost" };
         }
 
-        public async Task PublishSaleAsync(object saleEvent)
+        public async Task PublishPaymentConfirmedAsync(PaymentResponseDTO payment)
         {
             using var connection = await _factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
             await channel.QueueDeclareAsync(
-                queue: "sale.requests",
+                queue: "payment.confirmed",
                 durable: false,
                 exclusive: false,
                 autoDelete: false,
                 arguments: null);
 
-            var json = JsonSerializer.Serialize(saleEvent);
+            var json = JsonSerializer.Serialize(payment);
             var body = Encoding.UTF8.GetBytes(json);
 
             await channel.BasicPublishAsync(
                 exchange: string.Empty,
-                routingKey: "sale.requests",
+                routingKey: "payment.confirmed",
                 body: body);
 
-            _logger.LogInformation(" [x] Sent sale request: {Message}", json);
+            _logger.LogInformation("Payment confirmed published: {PaymentId}", payment.PaymentId);
         }
     }
 }

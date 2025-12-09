@@ -2,5 +2,6 @@
 {
     public interface ISaleProducerRepository
     {
+        Task PublishSaleAsync(object saleEvent);
     }
 }

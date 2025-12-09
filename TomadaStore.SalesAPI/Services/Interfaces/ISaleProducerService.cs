@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using TomadaStore.Models.DTOs.Sale;
 
 namespace TomadaStore.SalesAPI.Services.Interfaces
 {
     public interface ISaleProducerService
     {
-        Task CreateSaleRabbitAsync();
+        Task CreateSaleRabbitAsync(int idCustomer, string idProduct, SaleRequestDTO saleDTO);
     }
 }

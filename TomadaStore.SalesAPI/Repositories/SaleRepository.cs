@@ -1,10 +1,12 @@
 ﻿using MongoDB.Driver;
+using TomadaStore.Models.DTOs.Category;
 using TomadaStore.Models.DTOs.Customer;
+using TomadaStore.Models.DTOs.Payment;
 using TomadaStore.Models.DTOs.Product;
 using TomadaStore.Models.DTOs.Sale;
 using TomadaStore.Models.Models;
-using TomadaStore.SaleAPI.Data;
 using TomadaStore.SaleAPI.Repository.Interfaces;
+using TomadaStore.SalesAPI.Data;
 using TomadaStore.SalesAPI.Repositories.Interfaces;
 
 namespace TomadaStore.SaleAPI.Repository
@@ -69,5 +71,66 @@ namespace TomadaStore.SaleAPI.Repository
                 throw;
             }
         }
+
+        public async Task<SaleResponseDTO> GetSaleByIdAsync(string id)
+        {
+            var sale = await _mongoCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+            return sale?.ToResponseDTO(); 
+        }
+
+        public async Task CreateConfirmedSaleAsync(PaymentResponseDTO paymentConfirmed)
+        {
+            try
+            {
+                var mockCustomer = new CustomerResponseDTO
+                {
+                    Id = 1, 
+                    FirstName = "Cliente",
+                    LastName = "Pago",
+                    Email = "cliente@pago.com",
+                    PhoneNumber = "999999999"
+                };
+
+                var mockProduct = new ProductResponseDTO
+                {
+                    Id = "prod-pago",
+                    Name = "Produto Confirmado",
+                    Description = $"Produto pago via {paymentConfirmed.PaymentId}",
+                    Price = paymentConfirmed.Amount,
+                    Category = new CategoryResponseDTO 
+                    {
+                        Id = "1",
+                        Name = "Geral",
+                        Description = "Categoria padrão"
+                    }
+                };
+
+                var saleRequest = new SaleRequestDTO
+                {
+                    CustomerId = 1,
+                    Products = new List<SaleProductItemDTO>
+            {
+                new SaleProductItemDTO
+                {
+                    ProductId = "produto-pago",
+                    Quantity = 1
+                }
+            }
+                };
+
+                await CreateSaleAsync(mockCustomer, mockProduct, saleRequest);
+
+                _logger.LogInformation("Venda persistida no Mongo para PaymentId: {PaymentId}", 
+                    paymentConfirmed.PaymentId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao persistir venda confirmada: {PaymentId}", 
+                    paymentConfirmed.PaymentId);
+                throw;
+            }
+        }
+
+
     }
 }

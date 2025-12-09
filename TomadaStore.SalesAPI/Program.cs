@@ -1,8 +1,12 @@
+using TomadaStore.SaleAPI.Repository;
+using TomadaStore.SaleAPI.Repository.Interfaces;
+using TomadaStore.SaleAPI.Services;
+using TomadaStore.SaleAPI.Services.Interfaces;
 using TomadaStore.SalesAPI.Data;
 using TomadaStore.SalesAPI.Repositories;
 using TomadaStore.SalesAPI.Repositories.Interfaces;
 using TomadaStore.SalesAPI.Services.Interfaces;
-using TomadaStore.SalesAPI.Services.v1;
+using TomadaStore.SalesAPI.Services.v2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,9 @@ builder.Services.AddSingleton<ConnectionDB>();
 
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<ISaleService, SaleService>();
+builder.Services.AddScoped<ISaleProducerRepository, SaleProducerRepository>();
+builder.Services.AddScoped<ISaleProducerService, SaleProducerService>();
+
 
 builder.Services.AddHttpClient<ISaleService, SaleService>(client =>
         client.BaseAddress = new Uri("https://localhost:5001/api/v1/Customer"));

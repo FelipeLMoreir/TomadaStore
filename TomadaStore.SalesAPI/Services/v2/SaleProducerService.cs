@@ -1,59 +1,47 @@
-﻿using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using TomadaStore.SaleAPI.Repository.Interfaces;
-using TomadaStore.SaleAPI.Services;
+﻿using System.Linq;
+using TomadaStore.Models.DTOs.Sale;
+using TomadaStore.SaleAPI.Services.Interfaces;
+using TomadaStore.SalesAPI.Repositories.Interfaces;
 using TomadaStore.SalesAPI.Services.Interfaces;
 
 namespace TomadaStore.SalesAPI.Services.v2
 {
     public class SaleProducerService : ISaleProducerService
     {
-        private readonly ISaleRepository _saleRepository;
-
+        private readonly ISaleProducerRepository _producerRepository;
         private readonly ILogger<SaleProducerService> _logger;
+        private readonly ISaleService _saleService;
 
-        private readonly HttpClient _httpClientProduct;
-
-        private readonly HttpClient _httpClientCustomer;
-
-        public SaleProducerService(ISaleRepository saleRepository,
-                            ILogger<SaleProducerService> logger,
-                            HttpClient httpProduct,
-                            HttpClient httpCustomer)
+        public SaleProducerService(
+            ISaleProducerRepository producerRepository,
+            ISaleService saleService,
+            ILogger<SaleProducerService> logger)
         {
-            _saleRepository = saleRepository;
+            _producerRepository = producerRepository;
+            _saleService = saleService;
             _logger = logger;
-            _httpClientProduct = httpProduct;
-            _httpClientCustomer = httpCustomer;
         }
 
-        public async Task CreateSaleRabbitAsync()
+        public async Task CreateSaleRabbitAsync(int idCustomer, string idProduct, SaleRequestDTO saleDTO)
         {
             try
             {
-                var factory = new ConnectionFactory { HostName = "localhost" };
-                using var connection = await factory.CreateConnectionAsync();
-                using var channel = await connection.CreateChannelAsync();
-                await channel.QueueDeclareAsync(queue: "saleList",
-                                                durable: false,
-                                                exclusive: false,
-                                                autoDelete: false,
-                                                arguments: null);
-                _logger.LogInformation(" [*] Waiting for messages.");
-                var consumer = new AsyncEventingBasicConsumer(channel);
-                consumer.ReceivedAsync += (model, ea) =>
+                var firstProduct = saleDTO.Products.FirstOrDefault();
+                var quantity = firstProduct?.Quantity ?? 1;
+
+                var saleEvent = new
                 {
-                    var body = ea.Body.ToArray();
-                    var message = System.Text.Encoding.UTF8.GetString(body);
-                    _logger.LogInformation($" [x] Received {message}");
-                    return Task.CompletedTask;
+                    CustomerId = idCustomer,
+                    ProductId = idProduct,
+                    Quantity = quantity,  
+                    SaleDate = DateTime.UtcNow
                 };
-                await channel.BasicConsumeAsync("saleList", autoAck: true,
-                                                         consumer: consumer);
+
+                await _producerRepository.PublishSaleAsync(saleEvent);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"An error occurred while creating a sale: {ex.Message}");
+                _logger.LogError(ex, "Erro ao publicar venda no RabbitMQ");
                 throw;
             }
         }

@@ -20,10 +20,6 @@ namespace TomadaStore.Models.Models
             Price = price;
             Category = category;
         }
-        public Product()
-        {
-            
-        }
         public Product(string id, string name, string description, decimal price, Category category)
         {
             Id = ObjectId.Parse(id);

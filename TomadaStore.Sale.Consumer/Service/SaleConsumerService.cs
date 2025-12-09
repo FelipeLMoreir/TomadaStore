@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using TomadaStore.Models.DTOs.Payment;
 using TomadaStore.Models.DTOs.Sale;
+using TomadaStore.Sale.Consumer.Repository.Interfaces;
 using TomadaStore.Sale.Consumer.Service.Interfaces;
 using TomadaStore.SaleAPI.Repository.Interfaces;
 
@@ -15,14 +16,16 @@ namespace TomadaStore.Sale.Consumer.Service
         private readonly HttpClient _paymentClient;
         private readonly ConnectionFactory _factory;
         private readonly ISaleRepository _saleRepository;
+        private readonly ISaleConsumerRepository _saleConsumerRepository;
 
         public SaleConsumerService(ILogger<SaleConsumerService> logger, HttpClient paymentClient, 
-            ISaleRepository saleRepository)
+            ISaleRepository saleRepository, ISaleConsumerRepository saleConsumerRepository)
         {
             _logger = logger;
             _paymentClient = paymentClient;
             _factory = new ConnectionFactory { HostName = "localhost" };
             _saleRepository = saleRepository;
+            _saleConsumerRepository = saleConsumerRepository;
         }
 
         public async Task StartConsumeAsync()

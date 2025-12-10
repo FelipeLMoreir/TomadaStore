@@ -9,8 +9,7 @@ namespace TomadaStore.Models.Models
 {
     public class Product
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonPropertyName("id")]
         public ObjectId Id { get; private set; }
         [JsonPropertyName("name")]
         public string Name { get; private set; }

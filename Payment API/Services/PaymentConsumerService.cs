@@ -78,11 +78,11 @@ namespace TomadaStore.PaymentAPI.Services
                 var approvedBody = Encoding.UTF8.GetBytes(approvedJson);
 
                 await channel.BasicPublishAsync(
-                    exchange: "",
-                    routingKey: "approved-sales.queue",
-                    body: approvedBody);
+                      exchange: string.Empty,
+                      routingKey: "approved-sales.queue",
+                      body: approvedBody);
 
-                _logger.LogInformation("✅ Sale APPROVED: {SaleId} | Total: {TotalAmount}",
+                _logger.LogInformation("Sale APPROVED: {SaleId} | Total: {TotalAmount}",
                     approvedEvent.SaleId, approvedEvent.TotalAmount);
 
                 await Task.CompletedTask;

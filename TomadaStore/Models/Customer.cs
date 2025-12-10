@@ -29,5 +29,9 @@
             Email = email;
             PhoneNumber = phoneNumber;
         }
+        public Customer()
+        {
+            
+        }
     }
 }

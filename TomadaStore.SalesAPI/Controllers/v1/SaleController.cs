@@ -4,6 +4,7 @@ using TomadaStore.Models.DTOs.Sale;
 using TomadaStore.Models.DTOs.Sales;
 using TomadaStore.SaleAPI.Services.Interfaces;
 using TomadaStore.SalesAPI.Services.Interfaces;
+using TomadaStore.SalesAPI.Services.v2;
 
 namespace TomadaStore.SaleAPI.Controllers.v1
 {
@@ -31,5 +32,7 @@ namespace TomadaStore.SaleAPI.Controllers.v1
 
             return Ok("Sale created successfully!");
         }
+
+
     }
 }

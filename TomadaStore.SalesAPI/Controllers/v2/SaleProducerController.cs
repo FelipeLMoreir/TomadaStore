@@ -25,11 +25,26 @@ namespace TomadaStore.SalesAPI.Controllers.v2
             string idProduct,
             [FromBody] SaleRequestDTO saleDTO)
         {
-            _logger.LogInformation("Publicando venda na fila...");
+            try
+            {
+                _logger.LogInformation("Publicando venda na fila - Customer: {CustomerId}, Product: {ProductId}",
+                    idCustomer, idProduct);
 
-            await _producerService.CreateSaleRabbitAsync(idCustomer, idProduct, saleDTO);
+                await _producerService.CreateSaleRabbitAsync(idCustomer, idProduct, saleDTO);
 
-            return Accepted("Sale request published to queue.");
+                return Accepted(new
+                {
+                    Message = "Sale request published to queue 'sale.requests'",
+                    CustomerId = idCustomer,
+                    ProductId = idProduct,
+                    TotalProducts = saleDTO.Products?.Count ?? 0
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao publicar venda");
+                return BadRequest($"Erro: {ex.Message}");
+            }
         }
     }
 }
